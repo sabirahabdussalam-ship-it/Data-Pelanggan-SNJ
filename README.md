@@ -1,22 +1,23 @@
-# Data-Pelanggan-SNJ
+DATA PELANGGAN SRN
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PD-PELANGGAN | GitHub Pages & Firebase</title>
+    <title>PD-PELANGGAN | Cloud System</title>
+    <!-- Desain UI Modern (Bootstrap) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f4f7f6; font-family: 'Inter', sans-serif; }
-        .navbar { background-color: #003366; }
-        .card { border-radius: 12px; border: none; }
+        body { background-color: #f0f2f5; font-family: sans-serif; }
+        .navbar { background-color: #003366; border-bottom: 3px solid #ffc107; }
+        .card { border-radius: 15px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
 
 <nav class="navbar navbar-dark p-3 shadow-sm">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="#">📊 PD-PELANGGAN (Cloud)</a>
+        <a class="navbar-brand fw-bold" href="#">🏛️ PANGKALAN DATA CLOUD</a>
     </div>
 </nav>
 
@@ -24,10 +25,10 @@
     <div class="row g-4">
         <!-- FORM INPUT -->
         <div class="col-lg-4">
-            <div class="card shadow-sm p-4">
-                <h5 class="fw-bold text-primary mb-3">Input Pelanggan</h5>
-                <form id="formPelanggan">
-                    <input type="text" id="nama" class="form-control mb-2" placeholder="Nama Lengkap" required>
+            <div class="card p-4">
+                <h5 class="fw-bold text-primary mb-3">Input Transaksi</h5>
+                <form id="formInput">
+                    <input type="text" id="nama" class="form-control mb-2" placeholder="Nama Pelanggan" required>
                     <input type="text" id="telp" class="form-control mb-2" placeholder="No. Telepon">
                     <input type="text" id="npwp" class="form-control mb-2" placeholder="NPWP">
                     <textarea id="barang" class="form-control mb-2" placeholder="Barang yang dibeli"></textarea>
@@ -36,25 +37,25 @@
                         <option>Premium</option>
                         <option>VIP</option>
                     </select>
-                    <button type="submit" class="btn btn-primary w-100 fw-bold">SIMPAN KE CLOUD</button>
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">SIMPAN DATA</button>
                 </form>
             </div>
         </div>
 
         <!-- TABEL DATA -->
         <div class="col-lg-8">
-            <div class="card shadow-sm overflow-hidden">
+            <div class="card overflow-hidden">
                 <table class="table table-hover mb-0">
-                    <thead class="table-light">
+                    <thead class="table-dark">
                         <tr>
-                            <th>Pelanggan</th>
+                            <th>Profil</th>
                             <th>NPWP</th>
                             <th>Barang</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="tabelBody">
-                        <!-- Data otomatis muncul di sini -->
+                        <!-- Data Muncul Otomatis -->
                     </tbody>
                 </table>
             </div>
@@ -62,18 +63,18 @@
     </div>
 </div>
 
-<!-- SDK FIREBASE (Penghubung Database) -->
+<!-- KONEKSI FIREBASE -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-  // GANTI DENGAN KONFIGURASI FIREBASE KAMU
+  // MASUKKAN KODE FIREBASE CONFIG KAMU DI SINI
   const firebaseConfig = {
-    apiKey: "AIzaSy...",
-    authDomain: "proyek-kamu.firebaseapp.com",
-    databaseURL: "https://proyek-kamu-default-rtdb.firebaseio.com",
-    projectId: "proyek-kamu",
-    storageBucket: "proyek-kamu.appspot.com",
+    apiKey: "MASUKKAN_API_KEY",
+    authDomain: "PROYEK_KAMU.firebaseapp.com",
+    databaseURL: "https://PROYEK_KAMU.firebaseio.com",
+    projectId: "PROYEK_KAMU",
+    storageBucket: "PROYEK_KAMU.appspot.com",
     messagingSenderId: "...",
     appId: "..."
   };
@@ -82,8 +83,8 @@
   const db = getDatabase(app);
   const dbRef = ref(db, 'pelanggan');
 
-  // PROSES SIMPAN
-  document.getElementById('formPelanggan').addEventListener('submit', (e) => {
+  // FUNGSI SIMPAN
+  document.getElementById('formInput').addEventListener('submit', (e) => {
     e.preventDefault();
     push(dbRef, {
       nama: document.getElementById('nama').value,
@@ -92,31 +93,28 @@
       barang: document.getElementById('barang').value,
       status: document.getElementById('status').value
     });
-    document.getElementById('formPelanggan').reset();
+    document.getElementById('formInput').reset();
   });
 
-  // PROSES TAMPIL DATA (REALTIME)
+  // FUNGSI TAMPIL REALTIME
   onValue(dbRef, (snapshot) => {
     const tabel = document.getElementById('tabelBody');
     tabel.innerHTML = "";
-    snapshot.forEach((childSnapshot) => {
-      const data = childSnapshot.val();
-      const key = childSnapshot.key;
+    snapshot.forEach((child) => {
+      const d = child.val();
       tabel.innerHTML += `
         <tr>
-          <td><strong>${data.nama}</strong><br><small>${data.telp}</small></td>
-          <td>${data.npwp}</td>
-          <td><small>${data.barang}</small></td>
-          <td><button class="btn btn-sm btn-danger" onclick="hapusData('${key}')">Hapus</button></td>
+          <td><strong>${d.nama}</strong><br><small>${d.telp}</small></td>
+          <td>${d.npwp}</td>
+          <td><span class="badge bg-info text-dark">${d.barang}</span></td>
+          <td><button onclick="hapus('${child.key}')" class="btn btn-sm btn-danger">Hapus</button></td>
         </tr>`;
     });
   });
 
   // FUNGSI HAPUS
-  window.hapusData = (key) => {
-    if(confirm('Hapus data ini?')) {
-        remove(ref(db, 'pelanggan/' + key));
-    }
+  window.hapus = (key) => {
+    if(confirm('Hapus data?')) remove(ref(db, 'pelanggan/' + key));
   }
 </script>
 </body>
