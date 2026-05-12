@@ -90,8 +90,7 @@ DATA PELANGGAN SRN
       nama: document.getElementById('nama').value,
       telp: document.getElementById('telp').value,
       npwp: document.getElementById('npwp').value,
-      barang: document.getElementById('barang').value,
-      status: document.getElementById('status').value
+      No rekening : document.getElementById('No rekening').value,
     });
     document.getElementById('formInput').reset();
   });
